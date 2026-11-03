@@ -94,7 +94,15 @@ def naturalsize(
         return _("%d Byte") % int(bytes_)
 
     if abs_bytes < base:
-        return f"{int(bytes_)}B" if gnu else _("%d Bytes") % int(bytes_)
+        if bytes_.is_integer():
+            return f"{int(bytes_)}B" if gnu else _("%d Bytes") % int(bytes_)
+        # Keep the fractional part of non-integer byte counts (e.g. 1.5 Bytes)
+        # by applying `format`, reusing the translated "%d Bytes" label. If
+        # rounding reaches `base` (e.g. 999.96 -> "1000.0"), fall through so the
+        # suffix logic below steps up to "1.0 kB".
+        number = format % bytes_
+        if abs(float(number)) < base:
+            return f"{number}B" if gnu else _("%d Bytes").replace("%d", number)
 
     from math import log
 
