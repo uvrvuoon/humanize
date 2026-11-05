@@ -113,6 +113,9 @@ import humanize
         ([300, False, False, "%.3f"], "300 Bytes"),
         ([300, False, True, "%.3f"], "300B"),
         ([1.0, False, False, "%.3f"], "1 Byte"),
+        ([999.96], "1.0 kB"),
+        ([1023.97, True], "1.0 KiB"),
+        ([1023.97, False, True], "1.0K"),
     ],
 )
 def test_naturalsize(test_args: list[int] | list[int | bool], expected: str) -> None:
